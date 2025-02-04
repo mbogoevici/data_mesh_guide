@@ -1,0 +1,16 @@
+pcaf:
+  target: dev_with_fal
+  outputs:
+    dev_with_fal:
+      type: fal
+      db_profile: dev
+
+    dev:
+      type: trino
+      host: trino
+      user: admin
+      #password: <password>
+      port: 8080
+      database: hive
+      schema: pcaf
+      threads: 1

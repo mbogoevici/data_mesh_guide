@@ -4,7 +4,7 @@ This is a guide for creating data products for the OS-Climate Data Mesh.
 
 ## How are data product definitions structured  
 
-OS-Climate Data Products are defined via code, stored in Git. An example of a data product can be found [here](https://github.com/os-climate/pcaf_data_mesh_local_infra/tree/main/airflow/dags).  
+OS-Climate Data Products are defined via code, stored in Git. An example of a data product can be found [here](sample_data_products/pcaf).  
 
 In principle, each data product is structured as a collection of Apache Airflow DAGs, performing one or more of the following:
 
@@ -18,6 +18,53 @@ The product definitions are deployed in Airflow via a central bucket and can be 
 - the data product itself is deployed as one or more Trino tables, which can be queried using the Trino APIs, including Python and Java clients
 - the metadata associated with the data product is deployed in the metadata store (OpenMetadata)
 - the lineage of the data product is automatically registered in the metadata store (OpenMetadata)
+
+## A data product in detail 
+
+Here's a complete data product [samples](sample_data_products/pcaf) folder:
+
+```
+
+pcaf
+├── dbt
+│   ├── pcaf
+│   │   ├── analyses
+│   │   ├── dbt_project.yml
+│   │   ├── macros
+│   │   ├── models
+│   │   │   └── pcaf
+│   │   │       ├── countries.py
+│   │   │       ├── pcaf_oecd_agg.sql
+│   │   │       ├── pcaf_oecd_staging.sql
+│   │   │       ├── pcaf_primap.sql
+│   │   │       ├── pcaf_primap_staging.sql
+│   │   │       ├── pcaf_unfccc_annexi_staging.sql
+│   │   │       ├── pcaf_unfccc_nonannexi_staging.sql
+│   │   │       ├── pcaf_unfccc_sovereign_emissions.sql
+│   │   │       ├── pcaf_unfccc_with_lulucf.sql
+│   │   │       ├── pcaf_unfccc_without_lulucf.sql
+│   │   │       ├── pcaf_wdi.sql
+│   │   │       ├── pcaf_wdi_staging.sql
+│   │   │       └── schema.yml
+│   │   ├── package-lock.yml
+│   │   ├── packages.yml
+│   │   ├── seeds
+│   │   ├── snapshots
+│  └── tests
+│   └── profiles.yml
+├── generate docs.py
+├── pcaf_ingestion-oecd.py
+├── pcaf_ingestion-primap.py
+├── pcaf_ingestion-unfccc.py
+├── pcaf_ingestion-worldbank.py
+└── pcaf_unfccc_dbt_transformation.py
+
+```
+
+This data product consists of two sets of files:
+* Data pipelines represented as Apache Airflow DAGs (all `pcaf_*.py` files)
+* `dbt` transformation definitions; the `dbt` transformations are called by Apache Airflow data pipelines
+```
 
 ## What can product definitions contain
 
