@@ -64,7 +64,6 @@ pcaf
 This data product consists of two sets of files:
 * Data pipelines represented as Apache Airflow DAGs (all `pcaf_*.py` files)
 * `dbt` transformation definitions; the `dbt` transformations are called by Apache Airflow data pipelines
-```
 
 ## What can product definitions contain
 
