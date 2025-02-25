@@ -6,6 +6,18 @@ This is a guide for creating data products for the OS-Climate Data Mesh.
 
 ![The GitOps lifecycle of a data product](/images/PlatformArchitecture.png)
 
+The Data Mesh offers a GitOps-based Data-as-Code approach to creating and deploying data products. 
+
+A Data Product is defined in Git Repository. Its structure is described below. 
+
+At runtime, a Data Product can be deployed into the platform either:
+
+* manually
+* automatically, using ArgoCD
+
+Once the Data Product is uploaded into the platform, an Airflow pipeline is executed automatically, triggering the ETL pipeline.
+
+
 ## How are data product definitions structured  
 
 OS-Climate Data Products are defined via code, stored in Git. An example of a data product can be found [here](sample_data_products/pcaf).  
