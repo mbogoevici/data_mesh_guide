@@ -2,6 +2,10 @@
 
 This is a guide for creating data products for the OS-Climate Data Mesh.
 
+## Platform Architecture
+
+![The GitOps lifecycle of a data product](/images/PlatformArchitecture.png)
+
 ## How are data product definitions structured  
 
 OS-Climate Data Products are defined via code, stored in Git. An example of a data product can be found [here](sample_data_products/pcaf).  
@@ -10,7 +14,7 @@ In principle, each data product is structured as a collection of Apache Airflow 
 
 - Downloading data from an external source and loading into an S3-compatible object store or a local database
 - Transforming data into a Parquet-compatible format for Apache Hive or Apache Iceberg
-- Definining a table structure on top of the Parquet formatted data and registering it in Trino
+- Defining a table structure on top of the Parquet formatted data and registering it in Trino
 - Performing transformations on top of Trino tables, either directly in code or using DBT
 
 The product definitions are deployed in Airflow via a central bucket and can be manually executed. The expected result in each case is:
@@ -63,7 +67,7 @@ pcaf
 
 This data product consists of two sets of files:
 * Data pipelines represented as Apache Airflow DAGs (all `pcaf_*.py` files)
-* `dbt` transformation definitions; the `dbt` transformations are called by Apache Airflow data pipelines
+* `dbt` transformation definitions; the `dbt` transformations are called by Apache Airflow data pipelines                   
 
 ## What can product definitions contain
 
