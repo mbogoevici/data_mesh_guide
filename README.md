@@ -2,7 +2,17 @@
 
 This is a guide for creating data products for the OS-Climate Data Mesh.
 
-## Platform Architecture
+## Functionality
+
+The OS-Climate Data Platform is targeting the following capabilities:
+- Data-as-Code model for declarative data products
+- GitOps-based deployment of data products via automated data pipelines
+- Declarative metadata and lineage management
+- Data Federation 
+
+Currently, all the data products are deployed as tables accessible via Trino/Hive. In future versions, this will change to Apache Iceberg. Future versions of the platform may support other target databases. 
+
+The architecture of the platform can be seen in the following figure:
 
 ![The GitOps lifecycle of a data product](/images/PlatformArchitecture.png)
 
@@ -17,8 +27,35 @@ At runtime, a Data Product can be deployed into the platform either:
 
 Once the Data Product is uploaded into the platform, an Airflow pipeline is executed automatically, triggering the ETL pipeline.
 
+## Using the platform
 
-## How are data product definitions structured  
+### Who are the primary users 
+
+The primary users of the platform are:
+* Data producers who want to create new data products and make them available through the platform;
+* Data consumers who want to access datasets for use cases such as for analytics, AI/ML, visualization;
+
+Data producers may create new data products by downloading and transforming already existing datasets (as we will see in the PCAF example below), or from other data products already provided inside the platform. Thus, the data platform acts as a facilitator between data producers and data consumers. 
+
+### A day in the life of a data producer
+
+A data producer will:
+
+* create a data product definition (as described in the `Data-as-Code` section below) in a GitHub repository; 
+* develop and test the data pipelines that make up their data product definition on a local version of the platform 
+* include additional metadata associated with the data product in the definition
+* deploy the contents of the data product onto the platform using the GitOps capabilities 
+
+### A day in the life of a data consumer
+
+A data consumer will:
+
+* use the registered metadata to find data products of interest
+* access the tables that make up the data product via Trino
+
+Currently, all the access to data products is available as via Trino. We are planning to add other modes of access in the future, including API-based and data exporting capabilites.
+
+## Data-as-Code Data Product Definitions
 
 OS-Climate Data Products are defined via code, stored in Git. An example of a data product can be found [here](sample_data_products/pcaf).  
 
@@ -35,7 +72,7 @@ The product definitions are deployed in Airflow via a central bucket and can be 
 - the metadata associated with the data product is deployed in the metadata store (OpenMetadata)
 - the lineage of the data product is automatically registered in the metadata store (OpenMetadata)
 
-## A data product in detail 
+### A data product in detail 
 
 Here's a complete data product [samples](sample_data_products/pcaf) folder:
 
@@ -81,7 +118,7 @@ This data product consists of two sets of files:
 * Data pipelines represented as Apache Airflow DAGs (all `pcaf_*.py` files)
 * `dbt` transformation definitions; the `dbt` transformations are called by Apache Airflow data pipelines                   
 
-## What can product definitions contain
+### What can product definitions contain
 
 Product definitions are written as Apache Airflow DAGs in Python. There are several ways to define tasks:
 
@@ -89,7 +126,7 @@ Product definitions are written as Apache Airflow DAGs in Python. There are seve
 - Complex tasks that do require additional dependencies or are compute intensive can be defined in separate container images and executed using either the DockerOperator (for local deployment) or the KubernetesOperator (when deployed on the platform)
 - (Work in progress) In the future, the project will provide predefined containerized images for generic tasks, such as DBT transformations.
 
-## A basic end to end example 
+### A basic end to end example 
 
 Here is a simple example for a data product definition from the PCAF repository. It describes a process to download and register an intermediate data product as a Trino table. The whole source code is available [here]().
 
@@ -153,3 +190,11 @@ Then, we define a task to register this table into Trino:
 Finally, we define the end-to-end flow as follows:
 
     load_data_to_s3_bucket()  >> trino_create_schema >> trino_create_worldbank_table
+
+
+## GitOps-based data product deployment via automated data pipelines
+
+In order for data products to be accessible to the platform users, the data product definitions created in Git must be deployed onto the platform.
+
+<TBD>
+
