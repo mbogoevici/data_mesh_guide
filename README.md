@@ -196,25 +196,25 @@ Finally, we define the end-to-end flow as follows:
 
 In order for data products to be accessible to the platform users, the data product definitions (Airflow DAGS , DBT ) created in Git must be deployed onto the platform.
 
-## Data Product Deployment Process using GitAction CI-CD pipeline
+### Data Product Deployment Process using GitAction CI-CD pipeline
 
-## Local Development & Testing
+### Local Development & Testing
 
 The data product is initially tested in the local development environment to ensure functionality and correctness.
 
-## Code Check-in & PR Creation
+### Code Check-in & PR Creation
 
 Once testing is complete, the product owner checks the code into their respective Git branch.
 
 A Pull Request (PR) is created for code review.
 
-## Code Review & Merge
+### Code Review & Merge
 
 The PR undergoes a review process.
 
 Upon approval, the product pipeline code—such as Airflow DAGs and DBT models—is merged into the main branch.
 
-## GitHub Actions Trigger & Deployment
+### GitHub Actions Trigger & Deployment
 
 Merging the code triggers a GitHub Actions pipeline.
 
