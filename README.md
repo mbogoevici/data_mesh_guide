@@ -196,7 +196,7 @@ Finally, we define the end-to-end flow as follows:
 
 In order for data products to be accessible to the platform users, the data product definitions (Airflow DAGS , DBT ) created in Git must be deployed onto the platform.
 
-# Data Product Deployment Process using GitAction CI-CD pipeline
+## Data Product Deployment Process using GitAction CI-CD pipeline
 
 ## Local Development & Testing
 
