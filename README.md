@@ -43,6 +43,10 @@ In what follows, we will discuss how these components work together to deliver t
 - data storage and access 
 - lineage management
 
+The interaction between components and their mapping to the functional areas can be visualized in the following diagram. 
+
+![Data Mesh Functional areas](/images/Data%20Mesh.drawio.png)
+
 ## Defining Data Pipelines for Ingestion and Transformation
 
 Data pipeline definitions to ingest external datasets into the data mesh and to apply transformations in order to create new datasets. 
