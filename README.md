@@ -2,7 +2,7 @@
 
 This is a guide for creating data products for the OS-Climate Data Mesh.
 
-## Functionality
+## Data Mesh Architecture
 
 The OS-Climate Data Platform is targeting the following capabilities:
 - Data-as-Code model for declarative data products
@@ -26,6 +26,65 @@ At runtime, a Data Product can be deployed into the platform either:
 * automatically, using ArgoCD
 
 Once the Data Product is uploaded into the platform, an Airflow pipeline is executed automatically, triggering the ETL pipeline.
+
+The functionality of the Data Mesh is delivered by the following technologies:
+
+| Technology       | Description                                                                                                   | Link                                                                                                                                                                                             |
+|------------------|---------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Airflow][]      | Workflow management platform for data engineering pipelines                                                   | [Airflow Development Instance](https://airflow-openmetadata.apps.odh-cl2.apps.os-climate.org/home)                                                                                               |
+| [dbt][]          | SQL-based data transformation tool providing git-enabled version control of data transformation pipelines     | |
+| [Trino][]        | Distributed SQL Query Engine for big data, used for data ingestion and distributed queries                    | [Trino Console](https://trino-secure-odh-trino.apps.odh-cl2.apps.os-climate.org/)                                                                                                                |
+| [Apache Hive][]  | Metadata store - used for Trino integration                                                                   |                                                                                          [Superset Development Instance](https://superset-secure-odh-superset.apps.odh-cl2.apps.os-climate.org/) |
+| [Minio][]        | Object store - used for materializing table data                                                              | [Grafana Development Instance](https://grafana-opf-monitoring.apps.odh-cl2.apps.os-climate.org/login)
+| [OpenMetadata][] | Centralized metadata store providing data discovery, data collaboration, metadata versioning and data lineage | [OpenMetadata Development Instance](https://openmetadata-openmetadata.apps.odh-cl2.apps.os-climate.org)                                                                                          |
+
+In what follows, we will discuss how these components work together to deliver the Data Mesh functionality, which comprises of:
+- defining data pipelines for ingestion and transformation
+- data storage and access 
+- lineage management
+
+## Defining Data Pipelines for Ingestion and Transformation
+
+Data pipeline definitions to ingest external datasets into the data mesh and to apply transformations in order to create new datasets. 
+The data pipelines are defined directly as Apache Airflow DAGs written in Python, and can contain tasks for:
+
+* downloading datasets in structured formats such as CSV and Parquet from external repositories (such as institution websites or public repositories such as Zenodo)
+* transforming the externally downloaded data into Parquet (where necessary)
+* deploying data into object storage
+* registering new tables in Trino for the ingested data
+* performing data transformations on existing tables and deploying the new datasets as tables via Trino; these transformations are mainly done declaratively as DBT models, however other options such as using Python code directly are also possible;
+
+A comprehensive example of downloading and registering World Bank GDP data as a table is available below.
+
+The following technologies are used for delivering this functionality:
+* Apache Airflow for defining and executing data pipelines
+* DBT for creating declarative models for data transformation
+
+This functionality relies on the data storage and access capabilities described below.
+
+### Data Storage and Access
+
+All data transformation and access in the data mesh operate on a materialized version of the data. 
+The datasets are stored in the [Parquet][] format in an S3-compatible object store and accessed as tables via Trino. 
+The Data Mesh uses Apache Hive to store the metatadata required by Trino for SQL access. 
+
+Trino is the main data access point for the data mesh, all the deployed datasets being available as tables structured by catalogs.
+The use of Trino also allows to federate data available in other data stores as a single unified SQL store.
+
+The following technologies are used for delivering this functionality:
+- Minio (or an equivalent S3-compatible datastore) for storing the data in Parquet format
+- Trino as the main data access and data federation tool
+- Apache Hive as a supporting component for storing the internal metadata required by Trino; Apache Hive is not intended to be used directly;
+
+Note: the metadata stored in Apache Hive is an internal representation that allows structured data stored in Parquet to be accessible via SQL; it is different from the business metadata associated with the datasets (discussed below).
+
+### Metadata and Lineage Management
+
+The data mesh contains business metadata for the deployed datasets and lineage information allowing to identify their provenance. This information is stored in Open Metadata. 
+OpenMetadata is integrated directly with Apache Airflow and Trino, allowing for the metadata and lineage information to be automatically registered after the data pipelines are executed. 
+
+The following technologies are used for delivering this functionality:
+* OpenMetadata (in combination with its Apache Airflow and Trino Integration)
 
 ## Using the platform
 
